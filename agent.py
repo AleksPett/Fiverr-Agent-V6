@@ -294,8 +294,7 @@ def handle_telegram_updates():
             )
             continue
 
-        # /status
-        if text.lower() in ["/status", "status"]:
+        
 
         # /status - vis alle ventende ordrer
         if text.lower() == "/status":
