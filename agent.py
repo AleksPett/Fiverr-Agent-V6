@@ -244,6 +244,59 @@ def handle_telegram_updates():
 
         log.info(f"Telegram-melding mottatt: {text}")
 
+        log.info(f"Telegram: {text}")
+
+        # /ny – manuell ordre direkte fra Telegram
+        if text.lower().startswith("/ny"):
+            lines = text[3:].strip().split("\n")
+            task = ""
+            customer = "Ukjent"
+            order_id = f"MANUELL-{int(time.time())}"
+            for line in lines:
+                if line.lower().startswith("kunde:"):
+                    customer = line.split(":", 1)[1].strip()
+                elif line.lower().startswith("oppgave:"):
+                    task = line.split(":", 1)[1].strip()
+                elif line.lower().startswith("ordre:"):
+                    order_id = line.split(":", 1)[1].strip()
+            if not task:
+                task = text[3:].strip()
+            if not task:
+                send_telegram(
+                    "Bruk slik:\n"
+                    "/ny\n"
+                    "Kunde: JohnDoe\n"
+                    "Oppgave: Beskriv hva som skal lages\n\n"
+                    "Eller enkelt:\n"
+                    "/ny Skriv en produktbeskrivelse for..."
+                )
+                continue
+            send_telegram(f"Behandler manuell ordre {order_id}...")
+            messages = [{
+                "role": "user",
+                "content": f"Fiverr-ordre: {order_id}\nKunde: {customer}\n\nOppgave:\n{task}\n\nLever ferdig arbeid na."
+            }]
+            delivery = claude(messages=messages)
+            pending_orders[order_id] = {
+                "task": task,
+                "customer": customer,
+                "delivery": delivery,
+            }
+            chat_history[order_id] = []
+            active_order = order_id
+            save_state()
+            send_telegram(
+                f"NY MANUELL ORDRE: {order_id}\n"
+                f"Kunde: {customer}\n\n"
+                f"--- LEVERANSE ---\n{delivery}\n-----------------\n\n"
+                f"ok {order_id}  →  godkjenn\n"
+                f"Eller chat fritt for endringer."
+            )
+            continue
+
+        # /status
+        if text.lower() in ["/status", "status"]:
+
         # /status - vis alle ventende ordrer
         if text.lower() == "/status":
             if not pending_orders:
