@@ -339,6 +339,7 @@ def handle_telegram_updates():
             "  /status  →  vis alle aktive ordrer\n"
             "  ok <ordre-id>  →  godkjenn og fullfør\n"
             "  endre <ordre-id>: <instruksjon>  →  revider leveranse\n"
+        )
 
 # ─── PROSESSER NY E-POST ─────────────────────────────────────────────────────
 
