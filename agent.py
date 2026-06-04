@@ -329,14 +329,16 @@ def handle_telegram_updates():
             revise_delivery(order_id, instruction)
             continue
 
-        # Ukjent kommando
+                # Ukjent kommando
         send_telegram(
-            "Kjente kommandoer:\n"
-            "  ok <ordre-id>  →  godkjenn ordre\n"
-            "  endre <ordre-id>: <instruksjon>  →  be om endring\n"
-            "  /status  →  vis aktive ordrer"
-        )
-
+            "Kjente kommandoer:\n\n"
+            "  /ny <oppgave>  →  send inn manuell ordre\n"
+            "  /ny\n"
+            "  Kunde: Navn\n"
+            "  Oppgave: Beskriv oppgaven\n\n"
+            "  /status  →  vis alle aktive ordrer\n"
+            "  ok <ordre-id>  →  godkjenn og fullfør\n"
+            "  endre <ordre-id>: <instruksjon>  →  revider leveranse\n"
 
 # ─── PROSESSER NY E-POST ─────────────────────────────────────────────────────
 
